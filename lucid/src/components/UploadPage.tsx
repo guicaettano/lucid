@@ -45,7 +45,7 @@ export default function UploadPage({ onFileUploaded, onBack }: UploadPageProps) 
     ]
 
     if (!allowedTypes.includes(file.type)) {
-      alert('Tipo de arquivo não suportado. Use PDF, DOC, DOCX, TXT ou imagens.')
+      alert('Tipo de arquivo não suportado. Use PDF, DOC, DOCX, TXT ou imagens.\n\n Arquivos scaneados ainda não são suportados.')
       return
     }
 
