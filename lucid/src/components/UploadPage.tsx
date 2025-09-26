@@ -50,7 +50,7 @@ export default function UploadPage({ onFileUploaded, onBack }: UploadPageProps) 
     }
 
     // Validar tamanho (máximo 10MB)
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 50 * 1024 * 1024) {
       alert('Arquivo muito grande. Tamanho máximo: 10MB')
       return
     }
@@ -200,7 +200,8 @@ export default function UploadPage({ onFileUploaded, onBack }: UploadPageProps) 
 
                 <div className="mt-6 text-sm text-gray-500">
                   <p>Formatos suportados: PDF, DOC, DOCX, TXT, JPG, PNG, GIF</p>
-                  <p>Tamanho máximo: 10MB</p>
+                  <p>Tamanho máximo: 50MB</p>
+                  <p>Arquivos scaneados ainda não são suportados</p>
                 </div>
               </div>
             </div>

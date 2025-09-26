@@ -1,16 +1,40 @@
-# Lucid - Transforme documentos em conhecimento
+# Lucid - AI Document Reader
 
-Uma aplicação de inteligência artificial que permite fazer upload de documentos, gerar resumos automáticos, FAQ e conversar com o conteúdo usando IA.
+Uma aplicação moderna de leitura inteligente de documentos multimodais com IA, construída com React + TypeScript (frontend) e FastAPI + SQLite (backend).
 
-## 🏗️ Arquitetura
+## 🚀 Funcionalidades
 
-- **Frontend**: React + TypeScript + Tailwind CSS
-- **Backend**: FastAPI + Python
-- **IA**: OpenAI GPT-4o-mini
+- **Upload de Documentos**: Suporte para PDF, DOCX, TXT e imagens
+- **Processamento Inteligente**: Extração de texto com OCR para imagens
+- **Resumo Automático**: Geração de resumos baseados em objetivos
+- **FAQ Inteligente**: Criação automática de perguntas frequentes
+- **Chat Interativo**: Conversa com o documento usando IA
+- **Banco de Dados**: Armazenamento local com SQLite
 
-## 🚀 Como executar
+## 🛠️ Tecnologias
 
-### 1. Configurar o Backend
+### Frontend
+- React 18 + TypeScript
+- Tailwind CSS para estilização
+- Vite para build e desenvolvimento
+- Axios para requisições HTTP
+
+### Backend
+- FastAPI (Python)
+- SQLite para banco de dados
+- OpenAI GPT para IA
+- EasyOCR para reconhecimento de texto em imagens
+- PyPDF2 para processamento de PDFs
+- python-docx para documentos Word
+
+## 📦 Instalação e Execução
+
+### Pré-requisitos
+- Node.js 18+ 
+- Python 3.8+
+- Chave da API OpenAI
+
+### 1. Configurar Backend
 
 ```bash
 cd lucid-backend
@@ -20,15 +44,18 @@ pip install -r requirements.txt
 
 # Configurar variáveis de ambiente
 cp config_example.env .env
-# Edite o arquivo .env e adicione sua chave da OpenAI
+# Editar .env com sua chave da OpenAI:
+# OPENAI_API_KEY=sua_chave_aqui
+# OPENAI_MODEL=gpt-3.5-turbo
 
-# Iniciar o backend
-python start_backend.py
+# Iniciar backend
+python api_sqlite.py
 ```
 
-O backend estará disponível em `http://localhost:8000`
+O backend estará disponível em: http://localhost:8000
+Documentação da API: http://localhost:8000/docs
 
-### 2. Configurar o Frontend
+### 2. Configurar Frontend
 
 ```bash
 cd lucid
@@ -36,95 +63,136 @@ cd lucid
 # Instalar dependências
 npm install
 
-# Iniciar o frontend
+# Iniciar frontend
 npm run dev
 ```
 
-O frontend estará disponível em `http://localhost:5173`
+O frontend estará disponível em: http://localhost:5173
 
-## 📋 Funcionalidades
+## 🗄️ Estrutura do Banco de Dados
 
-### ✅ Implementadas
-- Landing page moderna e responsiva
-- Upload de documentos (PDF, DOC, DOCX, TXT, imagens)
-- Processamento de texto via OCR
-- Geração de resumos automáticos
-- Geração de FAQ inteligente
-- Chat conversacional com o documento
-- Interface elegante inspirada no design da Apple
+### Tabelas SQLite
 
-### 🔧 APIs Disponíveis
+**arquivos**
+- `id` (TEXT): ID único do arquivo
+- `nome` (TEXT): Nome do arquivo
+- `tipo` (TEXT): Tipo/extensão do arquivo
+- `tamanho_mb` (REAL): Tamanho em MB
+- `paginas` (INTEGER): Número de páginas (opcional)
+- `criado_em` (TIMESTAMP): Data de criação
 
-- `POST /upload` - Upload de arquivos
-- `POST /process-text` - Processar texto digitado
-- `POST /generate-summary` - Gerar resumo e FAQ
-- `POST /chat` - Enviar mensagem no chat
-- `GET /document/{id}` - Obter documento
-- `GET /health` - Health check
+**chats**
+- `id` (TEXT): ID único da conversa
+- `arquivo_id` (TEXT): Referência ao arquivo
+- `pergunta` (TEXT): Pergunta do usuário
+- `resposta` (TEXT): Resposta da IA
+- `tokens_usados` (INTEGER): Tokens consumidos
+- `criado_em` (TIMESTAMP): Data da conversa
 
-## 🎨 Design
+**resumos**
+- `id` (TEXT): ID único do resumo
+- `arquivo_id` (TEXT): Referência ao arquivo
+- `resumo` (TEXT): Texto do resumo
+- `tokens_usados` (INTEGER): Tokens consumidos
+- `criado_em` (TIMESTAMP): Data de criação
 
-O projeto segue os princípios de design da Apple:
-- Tipografia Inter e Roboto
-- Espaçamento generoso
-- Cores suaves e gradientes
-- Interface limpa e intuitiva
-- Responsivo para todos os dispositivos
+## 🔧 Configuração Avançada
 
-## 🔑 Configuração da API
+### Supabase (Opcional)
 
-1. Obtenha uma chave da OpenAI em [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-2. Crie um arquivo `.env` no diretório `lucid-backend`:
+Para usar Supabase em vez de SQLite:
+
+1. Crie um projeto no Supabase
+2. Execute o SQL em `lucid-backend/supabase_schema.sql`
+3. Configure as variáveis de ambiente:
+   ```
+   SUPABASE_URL=sua_url_do_supabase
+   SUPABASE_KEY=sua_chave_do_supabase
+   ```
+
+### Variáveis de Ambiente
+
+**Backend (.env)**
 ```
-OPENAI_API_KEY=sua_chave_aqui
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_API_KEY=sua_chave_da_openai
+OPENAI_MODEL=gpt-3.5-turbo
+SUPABASE_URL=sua_url_do_supabase (opcional)
+SUPABASE_KEY=sua_chave_do_supabase (opcional)
+```
+
+## 📱 Como Usar
+
+1. **Acesse a aplicação** em http://localhost:5173
+2. **Faça upload** de um documento (PDF, DOCX, TXT ou imagem)
+3. **Selecione um objetivo** para análise
+4. **Visualize o resumo** e FAQ gerados automaticamente
+5. **Inicie um chat** para fazer perguntas sobre o documento
+
+## 🧪 Testes
+
+```bash
+# Testar backend
+cd lucid-backend
+python test_backend.py
+
+# Testar upload de arquivo
+curl -X POST "http://localhost:8000/upload" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@exemplo.pdf"
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
-Lucid1/
-├── lucid/                 # Frontend React
-│   ├── src/
-│   │   ├── components/    # Componentes React
-│   │   ├── services/      # Serviços de API
-│   │   └── ...
-│   └── ...
-├── lucid-backend/         # Backend FastAPI
-│   ├── core/             # Módulos principais
-│   ├── api.py            # API REST
-│   └── ...
-└── README.md
+lucid/
+├── src/
+│   ├── components/          # Componentes React
+│   │   ├── LandingPage.tsx
+│   │   ├── UploadPage.tsx
+│   │   ├── SummaryPage.tsx
+│   │   └── ChatPage.tsx
+│   ├── services/
+│   │   └── api.ts          # Serviço de API
+│   └── App.tsx             # Componente principal
+├── package.json
+└── tailwind.config.js
+
+lucid-backend/
+├── core/
+│   ├── database_sqlite.py  # Serviço SQLite
+│   ├── utils.py           # Utilitários de processamento
+│   ├── summarizer.py      # Geração de resumos
+│   ├── faq_generator.py   # Geração de FAQ
+│   └── chat_engine.py     # Motor de chat
+├── api_sqlite.py          # API FastAPI
+├── requirements.txt
+└── supabase_schema.sql    # Schema para Supabase
 ```
 
-## 🚀 Deploy
+## 🐛 Solução de Problemas
 
-### Backend (FastAPI)
-```bash
-# Usando uvicorn diretamente
-uvicorn api:app --host 0.0.0.0 --port 8000
+### Backend não inicia
+- Verifique se a porta 8000 está livre
+- Confirme se as dependências estão instaladas
+- Verifique se o arquivo .env está configurado
 
-# Ou usando o script
-python start_backend.py
-```
+### Frontend não carrega
+- Verifique se o backend está rodando
+- Confirme se a porta 5173 está livre
+- Execute `npm install` se houver erros de dependências
 
-### Frontend (Vite)
-```bash
-# Build para produção
-npm run build
-
-# Preview da build
-npm run preview
-```
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
+### Erro de API OpenAI
+- Verifique se a chave da API está correta
+- Confirme se há créditos disponíveis na conta OpenAI
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Este projeto é de código aberto e está disponível sob a licença MIT.
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+
+---
+
+**Desenvolvido com ❤️ para transformar documentos em conhecimento útil!**
